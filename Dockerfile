@@ -46,10 +46,13 @@ RUN pip3 install --no-cache-dir --break-system-packages \
 ARG USERNAME=ros
 ARG USER_UID=1000
 ARG USER_GID=1000
+ARG RENDER_GID=44
 RUN if id -u ubuntu >/dev/null 2>&1; then userdel -r ubuntu; fi \
  && groupadd --gid ${USER_GID} ${USERNAME} \
  && useradd --uid ${USER_UID} --gid ${USER_GID} -m -s /bin/bash ${USERNAME} \
- && usermod -aG video ${USERNAME} \
+ # Create a group matching the host's GPU render group (if missing) and join it
+ && (getent group ${RENDER_GID} >/dev/null || groupadd --gid ${RENDER_GID} render_host) \
+ && usermod -aG video,$(getent group ${RENDER_GID} | cut -d: -f1) ${USERNAME} \
  && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME} \
  && chmod 0440 /etc/sudoers.d/${USERNAME} \
  && mkdir -p /ros2_ws && chown ${USER_UID}:${USER_GID} /ros2_ws
