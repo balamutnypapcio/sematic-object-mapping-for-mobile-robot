@@ -36,10 +36,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # PyTorch w wersji CPU (bez CUDA: obraz o kilka GB mniejszy).
 # numpy<2, bo cv_bridge i reszta ROS-a z apt są zbudowane pod numpy 1.x.
 # --break-system-packages jest tu OK: kontener jest jednorazowy.
+# onnx/onnxruntime/onnxslim/openvino: export and CPU benchmark (yolo benchmark).
+# PIP_BREAK_SYSTEM_PACKAGES=1 lets Ultralytics auto-install missing extras too.
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
 RUN pip3 install --no-cache-dir --break-system-packages \
         torch torchvision --index-url https://download.pytorch.org/whl/cpu \
  && pip3 install --no-cache-dir --break-system-packages \
-        ultralytics "numpy<2"
+        ultralytics "numpy<2" \
+        "onnx>=1.12.0,<2.0.0" onnxruntime "onnxslim>=0.1.82" openvino
 
 # --- Użytkownik z takim samym UID/GID jak na hoście ---------------------------
 # Dzięki temu build/, install/, log/ i zbiory danych nie należą do roota.
