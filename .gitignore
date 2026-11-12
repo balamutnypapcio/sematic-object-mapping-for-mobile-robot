@@ -11,3 +11,5 @@ runs/
 datasets/
 *.pt
 *.onnx
+
+src/easynav_playgrounds/
