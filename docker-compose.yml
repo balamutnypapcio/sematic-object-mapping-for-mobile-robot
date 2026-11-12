@@ -1,3 +1,6 @@
+# Fixed project name, so start.sh and VS Code Dev Containers use the same container.
+name: ros2-dev
+
 services:
   ros_dev:
     build:
@@ -8,22 +11,30 @@ services:
     image: ros2_jazzy_dev
     container_name: ros2_jazzy_dev
     network_mode: host
+    # ipc: host = share /dev/shm with the host. The default 64 MB is too small
+    # for the PyTorch dataloader (YOLO training then fails with "Bus error").
     ipc: host
     privileged: true
     group_add:
+      # Access to the GPU (/dev/dri/renderD*) -> Gazebo rendering on the GPU via Mesa
       - ${RENDER_GID:-44}
     environment:
       - DISPLAY=${DISPLAY}
       - QT_X11_NO_MITSHM=1
+      # Separate ROS domain and discovery limited to this machine,
+      # so it does not mix with other robots on the university network or other projects.
       - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-42}
       - ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+      # If Gazebo crashes on an old GPU, uncomment this (slow, but works):
       # - LIBGL_ALWAYS_SOFTWARE=1
     volumes:
+      # Current folder (workspace with src/) -> /ros2_ws in the container
       - .:/ros2_ws
       - /tmp/.X11-unix:/tmp/.X11-unix
+      # Downloaded Gazebo Fuel models persist between runs
       - gz_cache:/home/ros/.gz
-    stdin_open: true
-    tty: true
+    stdin_open: true # same as -i
+    tty: true        # same as -t
 
 volumes:
   gz_cache:

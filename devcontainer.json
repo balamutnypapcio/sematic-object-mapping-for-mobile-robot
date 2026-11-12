@@ -1,0 +1,48 @@
+{
+  "name": "ROS 2 Jazzy + Gazebo Harmonic",
+
+  // Reuse the same compose setup as start.sh, so both use one container.
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "ros_dev",
+  "workspaceFolder": "/ros2_ws",
+
+  // Prepare .env (UID/GID) and X11 access on the host before starting.
+  "initializeCommand": "bash .devcontainer/init.sh",
+
+  "remoteUser": "ros",
+  // UID/GID already match the host (build args), no extra image layer needed.
+  "updateRemoteUserUID": false,
+  // Keep the container running after VS Code closes (terminals from start.sh may still use it).
+  "shutdownAction": "none",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.cpptools-extension-pack",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "redhat.vscode-xml",
+        "redhat.vscode-yaml"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        // Let Pylance find rclpy and other ROS Python packages.
+        "python.analysis.extraPaths": [
+          "/opt/ros/jazzy/lib/python3.12/site-packages"
+        ],
+        // C++ IntelliSense: your packages + all ROS 2 headers.
+        "C_Cpp.default.cppStandard": "c++17",
+        "C_Cpp.default.includePath": [
+          "${workspaceFolder}/**",
+          "/opt/ros/jazzy/include/**"
+        ],
+        "files.associations": {
+          "*.sdf": "xml",
+          "*.urdf": "xml",
+          "*.xacro": "xml",
+          "*.launch": "xml"
+        }
+      }
+    }
+  }
+}
