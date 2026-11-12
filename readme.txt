@@ -1,22 +1,22 @@
-ROS 2 Jazzy + Gazebo Harmonic w Dockerze
+ROS 2 Jazzy + Gazebo Harmonic in Docker
 
-Start (buduje obraz przy pierwszym uruchomieniu, potem otwiera terminal w kontenerze):
+Start (builds the image on the first run, then opens a shell in the container):
   ./start.sh
 
-Kolejny terminal w tym samym kontenerze:
-  ./start.sh            (albo: docker compose exec ros_dev bash)
+Another terminal in the same container:
+  ./start.sh            (or: docker compose exec ros_dev bash)
 
-Zatrzymanie:
+Stop:
   docker compose down
 
-Aliasy do ~/.bashrc (opcjonalnie, ścieżkę dopasuj):
+Optional aliases for ~/.bashrc (adjust the path):
   alias docker_start='~/ros2-docker-file/start.sh'
   alias docker_add='docker exec -it ros2_jazzy_dev bash'
 
-W kontenerze:
-  rosdep install --from-paths src --ignore-src -y   # zależności Twoich paczek
+Inside the container:
+  rosdep install --from-paths src --ignore-src -y   # dependencies of your packages
   colcon build --symlink-install
   source install/setup.bash
 
-Test, czy wszystko działa:
+Check that everything works:
   ros2 launch turtlebot4_gz_bringup turtlebot4_gz.launch.py slam:=true nav2:=true rviz:=true
