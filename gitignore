@@ -1,0 +1,10 @@
+# colcon
+build/
+install/
+log/
+
+# YOLO / dane
+runs/
+datasets/
+*.pt
+*.onnx

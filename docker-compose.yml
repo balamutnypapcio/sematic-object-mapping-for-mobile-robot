@@ -1,0 +1,29 @@
+services:
+  ros_dev:
+    build:
+      context: .
+      args:
+        USER_UID: ${HOST_UID:-1000}
+        USER_GID: ${HOST_GID:-1000}
+    image: ros2_jazzy_dev
+    container_name: ros2_jazzy_dev
+    network_mode: host
+    ipc: host
+    privileged: true
+    group_add:
+      - ${RENDER_GID:-44}
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID:-42}
+      - ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+      # - LIBGL_ALWAYS_SOFTWARE=1
+    volumes:
+      - .:/ros2_ws
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - gz_cache:/home/ros/.gz
+    stdin_open: true
+    tty: true
+
+volumes:
+  gz_cache:
