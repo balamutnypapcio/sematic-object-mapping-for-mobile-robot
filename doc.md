@@ -40,8 +40,8 @@ Online (robot run)
 |-------------------|-----------------------------------------------------------------------|--------|
 | 1. Environment    | Docker, Gazebo, house world in own package, launch file               | done   |
 | 2. Labels         | Bounding-box camera + label plugin on furniture                       | done   |
-| 3. Dataset        | Script that moves the camera, lighting variants, about 3000 images    | next   |
-| 4. Training       | Convert to YOLO format, split by region/lighting, fine-tune on Colab  | todo   |
+| 3. Dataset        | Script that moves the camera, lighting variants, about 3000 images    | done   |
+| 4. Training       | Convert to YOLO format, split by region/lighting, fine-tune on Colab  | next   |
 | 5. Robot          | TurtleBot 4 (or lighter fallback) with SLAM Toolbox + Nav2            | todo   |
 | 6. Detection node | ROS 2 node running YOLO on the robot camera (ONNX/OpenVINO on CPU)    | todo   |
 | 7. Object map     | Project boxes to 3D with depth + TF, merge duplicates into one entry  | todo   |

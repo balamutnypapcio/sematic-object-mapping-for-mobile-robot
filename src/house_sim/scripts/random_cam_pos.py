@@ -31,6 +31,9 @@ def random_free_xy(rng : random.Random):
 if __name__ == '__main__':
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--seed', type=int, default=None, help='random seed; if omitted a new one is drawn and printed')
+    p.add_argument('--positions', type=int, default=100, help='number of camera positions')
+    p.add_argument('--name', default='default', help='lighting variant, used in the log file name')
+
     a = p.parse_args()
     
     seed = a.seed if a.seed is not None else random.randrange(1_000_000)
@@ -39,10 +42,10 @@ if __name__ == '__main__':
 
     set_paused(False)
     try:
-        with open(f'/ros2_ws/datasets/poses_seed{seed}.csv', 'w', newline='') as f:
+        with open(f'/ros2_ws/datasets/poses_{a.name}_seed{seed}.csv', 'w', newline='') as f:
             log = csv.writer(f)
             log.writerow(['pos_id', 'x', 'y', 'z', 'yaw', 'pitch', 'time'])
-            for i in range(5):
+            for i in range(a.positions):
                 x, y = random_free_xy(rng)
                 z = rng.uniform(0.2, 0.29)
                 first_yaw = rng.uniform(0.0, 60.0)

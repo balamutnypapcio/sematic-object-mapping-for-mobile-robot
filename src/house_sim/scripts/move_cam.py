@@ -32,17 +32,27 @@ def set_paused(paused, world='default'):
     return 'true' in out.stdout
 
 
-def set_pose(name, x, y, z, yaw_deg, pitch_deg=0.0, world='default'):
-    """Call the Gazebo set_pose service. Returns True on success."""
+def set_pose(name, x, y, z, yaw_deg, pitch_deg=0.0, world='default',
+             timeout_ms=5000, retries=3):
+    """Call the Gazebo set_pose service. Returns True on success.
+
+    A failure is usually a reply timeout while the sim is busy, not a rejected
+    request, so retrying the same pose is safe (the call is idempotent).
+    """
     qx, qy, qz, qw = rpy_to_quat(0.0, math.radians(pitch_deg), math.radians(yaw_deg))
     req = (f'name: "{name}", position: {{x: {x}, y: {y}, z: {z}}}, '
            f'orientation: {{x: {qx}, y: {qy}, z: {qz}, w: {qw}}}')
-    out = subprocess.run(
-        ['gz', 'service', '-s', f'/world/{world}/set_pose',
-         '--reqtype', 'gz.msgs.Pose', '--reptype', 'gz.msgs.Boolean',
-         '--timeout', '2000', '--req', req],
-        capture_output=True, text=True)
-    return 'true' in out.stdout
+    for attempt in range(retries):
+        out = subprocess.run(
+            ['gz', 'service', '-s', f'/world/{world}/set_pose',
+             '--reqtype', 'gz.msgs.Pose', '--reptype', 'gz.msgs.Boolean',
+             '--timeout', str(timeout_ms), '--req', req],
+            capture_output=True, text=True)
+        if 'true' in out.stdout:
+            return True
+        print(f'  retry {attempt + 1}/{retries} for {name}')
+    return False
+
 
 
 if __name__ == '__main__':

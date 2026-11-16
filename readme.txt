@@ -25,3 +25,16 @@ Inside the container:
 
 Check that everything works:
   ros2 launch turtlebot4_gz_bringup turtlebot4_gz.launch.py slam:=true nav2:=true rviz:=true
+
+
+ID Gazebo	|| Class	|| ID YOLO
+    1	       chair	      0
+    2	       table	      1
+    3	       sofa	        2
+    4		     bed		      3
+    5		     TV		        4
+    6		     bin	        5
+    7		     fridge	     	6
+
+
+cam has 640x480 but robot has 320x240, to farther decision to lower cam res or make cam res higher 
